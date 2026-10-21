@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Api.Hubs;
-using ProxyCraft.Data;
-using ProxyCraft.Models;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Api.Hubs;
+using ProxyCraftPlus.Data;
+using ProxyCraftPlus.Models;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 public sealed class DomainEventPublisher(
     IServiceScopeFactory scopes,
@@ -18,7 +18,7 @@ public sealed class DomainEventPublisher(
         try
         {
             await using AsyncServiceScope scope = scopes.CreateAsyncScope();
-            ProxyCraftDbContext database = scope.ServiceProvider.GetRequiredService<ProxyCraftDbContext>();
+            ProxyCraftPlusDbContext database = scope.ServiceProvider.GetRequiredService<ProxyCraftPlusDbContext>();
             string? hash = await database.ApiKeys.AsNoTracking()
                 .Where((ApiKey key) => key.Id == 1 && key.IsActive)
                 .Select((ApiKey key) => key.KeyHash)

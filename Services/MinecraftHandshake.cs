@@ -1,7 +1,7 @@
 using System.Net.Sockets;
 using System.Text;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 // The original packet is preserved, including Forge metadata, for unchanged forwarding.
 internal sealed record MinecraftHandshake(

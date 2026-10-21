@@ -42,3 +42,7 @@ Unchanged polls skip rendering. A changed snapshot is applied in one document-fr
 Configured proxies use a desktop table and separate cards below 768px. Each mobile card shows the domain, labeled destination, backend status, and 44px live/history/edit/delete controls. The header uses the logo and theme icons below 640px, with accessible labels. Rainbow effects run automatically when selected, respect reduced motion, and pause in hidden tabs.
 
 Historical Firefox checks used a fresh browser profile and temporary app data, opened 100 real forwarded sessions, and checked the 100-entry live list and 20-entry history at 1440px, 768px, 390px, and 320px in all three themes. They also checked scroll anchoring during joins/disconnects, keyboard scrolling, mobile actions, the retired effects preference, and device reduced-motion changes.
+
+## Plus relay verification
+
+The Minecraft capacity results above are inherited from original ProxyCraft. The Plus API relay has separate fixture checks for 20 concurrent command requests, eight bounded backend connections, packet/UTF-8/output limits, and key authorization. These checks are not an Internet load test or a guarantee against resource exhaustion.

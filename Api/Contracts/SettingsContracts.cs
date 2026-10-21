@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using ProxyCraft.Configuration;
+using ProxyCraftPlus.Configuration;
 
-namespace ProxyCraft.Api.Contracts;
+namespace ProxyCraftPlus.Api.Contracts;
 
 public sealed record AppSettingsResponse(
     bool AuthenticationEnabled,

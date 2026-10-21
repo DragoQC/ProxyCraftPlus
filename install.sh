@@ -4,11 +4,11 @@ umask 027
 
 usage() {
     cat <<'HELP'
-ProxyCraft installer for Debian 13 (amd64/arm64, systemd).
+ProxyCraftPlus installer for Debian 13 (amd64/arm64, systemd).
 
-  curl -fsSL https://raw.githubusercontent.com/DragoQC/ProxyCraft/main/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/DragoQC/ProxyCraftPlus/main/install.sh | bash
 
-Run as root inside your Debian 13 VM/LXC. Downloads DragoQC/ProxyCraft from GitHub.
+Run as root inside your Debian 13 VM/LXC. Downloads DragoQC/ProxyCraftPlus from GitHub.
 
 Options:
   --ref REF         Branch, tag, or commit to install (default: main)
@@ -20,10 +20,10 @@ Rerun to update; saved routes, account, settings, API key, and cookie keys survi
 HELP
 }
 
-fail() { printf 'ProxyCraft: %s\n' "$*" >&2; exit 1; }
+fail() { printf 'ProxyCraftPlus: %s\n' "$*" >&2; exit 1; }
 value_required() { [[ $# -ge 2 && -n $2 && $2 != --* ]] || fail "Missing value for $1."; }
 
-repository='DragoQC/ProxyCraft'
+repository='DragoQC/ProxyCraftPlus'
 revision='main'
 web_port=''
 while (($#)); do
@@ -50,11 +50,11 @@ archive_url="https://codeload.github.com/$repository/tar.gz/$revision"
 case "$(dpkg --print-architecture)" in amd64|arm64) ;; *) fail 'Only amd64 and arm64 are supported.' ;; esac
 [[ -d /run/systemd/system ]] || fail 'A running systemd system is required. For Docker, use the Dockerfile/compose.yaml instead.'
 
-app_directory=/opt/proxycraft
-data_directory=/var/lib/proxycraft
-config_directory=/etc/proxycraft
-environment_file=$config_directory/proxycraft.env
-[[ ! -e $app_directory/current || -L $app_directory/current ]] || fail '/opt/proxycraft/current already exists and is not an installer-managed symlink.'
+app_directory=/opt/proxycraftplus
+data_directory=/var/lib/proxycraftplus
+config_directory=/etc/proxycraftplus
+environment_file=$config_directory/proxycraftplus.env
+[[ ! -e $app_directory/current || -L $app_directory/current ]] || fail '/opt/proxycraftplus/current already exists and is not an installer-managed symlink.'
 
 if [[ -z $web_port && -f $environment_file ]]; then
     web_port=$(sed -n 's/^ASPNETCORE_HTTP_PORTS=//p' "$environment_file")
@@ -63,7 +63,7 @@ web_port=${web_port:-8080}
 [[ $web_port =~ ^[0-9]{1,5}$ ]] && ((10#$web_port >= 1 && 10#$web_port <= 65535)) || fail 'Invalid existing dashboard port. Supply --port PORT.'
 web_port=$((10#$web_port))
 
-work_directory=$(mktemp -d /tmp/proxycraft-install.XXXXXXXX)
+work_directory=$(mktemp -d /tmp/proxycraftplus-install.XXXXXXXX)
 trap 'rm -rf -- "$work_directory"' EXIT
 export DEBIAN_FRONTEND=noninteractive
 printf 'Installing build prerequisites…\n'
@@ -76,33 +76,33 @@ if ! /usr/bin/dotnet --list-sdks 2>/dev/null | grep -q '^10\.'; then
     apt-get install -y --no-install-recommends dotnet-sdk-10.0 < /dev/null
 fi
 
-getent group proxycraft >/dev/null || groupadd --system proxycraft
-if ! id -u proxycraft >/dev/null 2>&1; then
-    useradd --system --gid proxycraft --home-dir "$data_directory" --no-create-home --shell /usr/sbin/nologin proxycraft
+getent group proxycraftplus >/dev/null || groupadd --system proxycraftplus
+if ! id -u proxycraftplus >/dev/null 2>&1; then
+    useradd --system --gid proxycraftplus --home-dir "$data_directory" --no-create-home --shell /usr/sbin/nologin proxycraftplus
 fi
-[[ $(id -u proxycraft) -ne 0 ]] || fail 'The proxycraft account must not be root.'
-install -d -o proxycraft -g proxycraft -m 0700 "$data_directory"
+[[ $(id -u proxycraftplus) -ne 0 ]] || fail 'The proxycraftplus account must not be root.'
+install -d -o proxycraftplus -g proxycraftplus -m 0700 "$data_directory"
 install -d -m 0755 "$app_directory/releases"
-install -d -o root -g proxycraft -m 0750 "$config_directory"
+install -d -o root -g proxycraftplus -m 0750 "$config_directory"
 mkdir -p "$work_directory/source"
 
 printf 'Downloading %s at %s…\n' "$repository" "$revision"
 curl -fsSL --retry 3 --proto '=https' "$archive_url" -o "$work_directory/source.tar.gz"
 tar -xzf "$work_directory/source.tar.gz" --strip-components=1 -C "$work_directory/source"
-[[ -f $work_directory/source/ProxyCraft.csproj && -f $work_directory/source/packages.lock.json ]] || fail 'Downloaded source is not a ProxyCraft project.'
+[[ -f $work_directory/source/ProxyCraftPlus.csproj && -f $work_directory/source/packages.lock.json ]] || fail 'Downloaded source is not a ProxyCraftPlus project.'
 install -d -m 0700 "$work_directory/runtime"
-chown -R proxycraft:proxycraft "$work_directory"
+chown -R proxycraftplus:proxycraftplus "$work_directory"
 # Builds run as the service account, never as root. Build tools/cache stay temporary.
 build_dotnet() {
-    runuser -u proxycraft -- env XDG_RUNTIME_DIR="$work_directory/runtime" \
+    runuser -u proxycraftplus -- env XDG_RUNTIME_DIR="$work_directory/runtime" \
         DOTNET_CLI_HOME="$work_directory/home" NUGET_PACKAGES="$work_directory/nuget" \
         DOTNET_NOLOGO=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 /usr/bin/dotnet "$@" < /dev/null
 }
-printf 'Building ProxyCraft…\n'
+printf 'Building ProxyCraftPlus…\n'
 cd "$work_directory/source"
-build_dotnet restore ProxyCraft.csproj --locked-mode
-build_dotnet publish ProxyCraft.csproj --configuration Release --no-restore --no-self-contained -p:UseAppHost=false --output "$work_directory/publish"
-[[ -f $work_directory/publish/ProxyCraft.dll ]] || fail 'Publish did not produce ProxyCraft.dll.'
+build_dotnet restore ProxyCraftPlus.csproj --locked-mode
+build_dotnet publish ProxyCraftPlus.csproj --configuration Release --no-restore --no-self-contained -p:UseAppHost=false --output "$work_directory/publish"
+[[ -f $work_directory/publish/ProxyCraftPlus.dll ]] || fail 'Publish did not produce ProxyCraftPlus.dll.'
 
 previous_release=$(readlink "$app_directory/current" || true)
 if [[ -f $environment_file ]]; then cp -p "$environment_file" "$work_directory/previous.env"; fi
@@ -122,33 +122,33 @@ else
         printf '\nASPNETCORE_HTTP_PORTS=%s\n' "$web_port" >> "$environment_file"
     fi
 fi
-chown root:proxycraft "$environment_file"
+chown root:proxycraftplus "$environment_file"
 chmod 0640 "$environment_file"
 
-cat > /etc/systemd/system/proxycraft.service <<'UNIT'
+cat > /etc/systemd/system/proxycraftplus.service <<'UNIT'
 [Unit]
-Description=ProxyCraft Minecraft proxy
+Description=ProxyCraftPlus Minecraft proxy
 Wants=network-online.target
 After=network-online.target
 
 [Service]
 Type=simple
-User=proxycraft
-Group=proxycraft
-WorkingDirectory=/opt/proxycraft/current
-EnvironmentFile=/etc/proxycraft/proxycraft.env
-ExecStart=/usr/bin/dotnet /opt/proxycraft/current/ProxyCraft.dll
+User=proxycraftplus
+Group=proxycraftplus
+WorkingDirectory=/opt/proxycraftplus/current
+EnvironmentFile=/etc/proxycraftplus/proxycraftplus.env
+ExecStart=/usr/bin/dotnet /opt/proxycraftplus/current/ProxyCraftPlus.dll
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=30
 NoNewPrivileges=true
 UMask=0077
-SyslogIdentifier=proxycraft
+SyslogIdentifier=proxycraftplus
 
 [Install]
 WantedBy=multi-user.target
 UNIT
-chmod 0644 /etc/systemd/system/proxycraft.service
+chmod 0644 /etc/systemd/system/proxycraftplus.service
 
 release_name="$(date -u +%Y%m%dT%H%M%SZ)-$RANDOM"
 release_directory=$app_directory/releases/$release_name
@@ -159,26 +159,26 @@ chmod -R u=rwX,go=rX "$release_directory"
 ln -s "releases/$release_name" "$app_directory/.current-$$"
 mv -Tf "$app_directory/.current-$$" "$app_directory/current"
 systemctl daemon-reload
-systemctl enable proxycraft.service
+systemctl enable proxycraftplus.service
 
 wait_for_app() {
     for ((attempt = 0; attempt < 30; attempt++)); do
-        if systemctl is-active --quiet proxycraft.service \
+        if systemctl is-active --quiet proxycraftplus.service \
             && curl -fsS --max-time 2 "http://127.0.0.1:$web_port/logo.svg" -o /dev/null 2>/dev/null; then return 0; fi
         sleep 1
     done
     return 1
 }
-if ! { systemctl restart proxycraft.service && wait_for_app; }; then
+if ! { systemctl restart proxycraftplus.service && wait_for_app; }; then
     if [[ -n $previous_release ]]; then
         ln -s "$previous_release" "$app_directory/.current-$$"
         mv -Tf "$app_directory/.current-$$" "$app_directory/current"
         if [[ -f $work_directory/previous.env ]]; then cp -p "$work_directory/previous.env" "$environment_file"; fi
-        systemctl restart proxycraft.service || true
+        systemctl restart proxycraftplus.service || true
         printf 'Restored the previous release and environment.\n' >&2
     else
-        systemctl stop proxycraft.service || true
+        systemctl stop proxycraftplus.service || true
     fi
-    fail 'Startup failed. Inspect: journalctl -u proxycraft -n 50 --no-pager'
+    fail 'Startup failed. Inspect: journalctl -u proxycraftplus -n 50 --no-pager'
 fi
-printf '\nProxyCraft is running.\nDashboard: http://<server-ip>:%s\nMinecraft: TCP 25565 (default)\nData: %s\nService: systemctl status proxycraft\n' "$web_port" "$data_directory"
+printf '\nProxyCraftPlus is running.\nDashboard: http://<server-ip>:%s\nMinecraft: TCP 25565 (default)\nData: %s\nService: systemctl status proxycraftplus\n' "$web_port" "$data_directory"

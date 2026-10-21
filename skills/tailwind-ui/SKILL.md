@@ -1,9 +1,9 @@
 ---
 name: tailwind-ui
-description: Create and refine ProxyCraft's simple, accessible dashboard UI with Tailwind CSS v4 and its Node-free standalone compiler. Use for Razor styling, responsive layouts, forms, tables, and operating states; excludes SEO and marketing pages.
+description: Create and refine ProxyCraftPlus's simple, accessible dashboard UI with Tailwind CSS v4 and its Node-free standalone compiler. Use for Razor styling, responsive layouts, forms, tables, and operating states; excludes SEO and marketing pages.
 ---
 
-# Tailwind UI for ProxyCraft
+# Tailwind UI for ProxyCraftPlus
 
 Read the root `AGENTS.md`, then inspect `Build/Tailwind.targets`, `Styles/app.css`, `Views/Shared/_Layout.cshtml`, and existing affected components.
 

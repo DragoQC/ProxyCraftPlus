@@ -1,7 +1,7 @@
 using System.Net.Sockets;
-using ProxyCraft.Models;
+using ProxyCraftPlus.Models;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 internal sealed record RouteHealth(
     bool? IsReachable,

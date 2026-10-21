@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ProxyCraft.Api.Hubs;
+namespace ProxyCraftPlus.Api.Hubs;
 
 [Authorize(Policy = "DomainEvents")]
 public sealed class DomainHub(DomainHubConnections connections) : Hub

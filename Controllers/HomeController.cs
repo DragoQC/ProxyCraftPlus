@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProxyCraft.Api.Documentation;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Api.Documentation;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Services;
 
-namespace ProxyCraft.Controllers;
+namespace ProxyCraftPlus.Controllers;
 
 public sealed class HomeController(
     ApiReferenceService reference,
@@ -34,6 +34,13 @@ public sealed class HomeController(
 
     [HttpGet("/proxies")]
     public IActionResult Proxies() => View();
+
+    [HttpGet("/proxies/{id:int}/rcon")]
+    public IActionResult Rcon(int id)
+    {
+        ViewData["ProxyId"] = id;
+        return View();
+    }
 
     [HttpGet("/settings/proxy")]
     public IActionResult ProxySettings() => View();

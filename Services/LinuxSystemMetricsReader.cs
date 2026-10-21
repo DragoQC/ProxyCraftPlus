@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Globalization;
-using ProxyCraft.Api.Contracts;
+using ProxyCraftPlus.Api.Contracts;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 // procDirectory is injectable for isolated fixtures; production always reads /proc.
 internal sealed class LinuxSystemMetricsReader(string procDirectory = "/proc")

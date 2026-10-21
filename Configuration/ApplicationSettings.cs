@@ -1,8 +1,8 @@
-namespace ProxyCraft.Configuration;
+namespace ProxyCraftPlus.Configuration;
 
 public sealed record ApplicationSettings
 {
-    public const string DefaultPublicDashboardTitle = "Welcome to ProxyCraft";
+    public const string DefaultPublicDashboardTitle = "Welcome to ProxyCraftPlus";
 
     public const string DefaultPublicDashboardMessage = "The Minecraft proxy that just works.";
 

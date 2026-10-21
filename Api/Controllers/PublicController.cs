@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Services;
 
-namespace ProxyCraft.Api.Controllers;
+namespace ProxyCraftPlus.Api.Controllers;
 
 [ApiController, AllowAnonymous, Route("api/v1/public")]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]

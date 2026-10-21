@@ -1,4 +1,4 @@
-namespace ProxyCraft.Configuration;
+namespace ProxyCraftPlus.Configuration;
 
 public sealed class DataPaths
 {
@@ -13,7 +13,7 @@ public sealed class DataPaths
         get;
     }
 
-    public string DatabasePath => Path.Combine(DirectoryPath, "proxycraft.db");
+    public string DatabasePath => Path.Combine(DirectoryPath, "proxycraftplus.db");
 
     public string SettingsPath => Path.Combine(DirectoryPath, "settings.json");
 }

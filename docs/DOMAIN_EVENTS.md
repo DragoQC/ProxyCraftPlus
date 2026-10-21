@@ -1,6 +1,6 @@
 # Live domain events
 
-ProxyCraft exposes a SignalR hub at **`/api/v1/hubs/domains`**. It uses ASP.NET Core's shared framework; the server needs no new package, browser library, broker, or polling process.
+ProxyCraftPlus exposes a SignalR hub at **`/api/v1/hubs/domains`**. It uses ASP.NET Core's shared framework; the server needs no new package, browser library, broker, or polling process.
 
 Generate an API key in App Settings. An integration sends that key in `X-API-Key` during negotiation and every transport request. A dashboard cookie alone cannot subscribe, even when normal dashboard sign-in is disabled. Keys are not accepted in URL parameters.
 
@@ -25,7 +25,7 @@ Both events carry the same JSON object:
 
 ## Connecting another C# application
 
-In the consuming application, use the Microsoft `Microsoft.AspNetCore.SignalR.Client` package appropriate for its runtime. This is a dependency of your integration, not an added dependency of ProxyCraft.
+In the consuming application, use the Microsoft `Microsoft.AspNetCore.SignalR.Client` package appropriate for its runtime. This is a dependency of your integration, not an added dependency of ProxyCraftPlus.
 
 ```csharp
 using Microsoft.AspNetCore.Http.Connections.Client;

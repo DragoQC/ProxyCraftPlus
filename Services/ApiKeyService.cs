@@ -3,13 +3,13 @@ using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Data;
-using ProxyCraft.Models;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Data;
+using ProxyCraftPlus.Models;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
-public sealed class ApiKeyService(ProxyCraftDbContext database)
+public sealed class ApiKeyService(ProxyCraftPlusDbContext database)
 {
     public async Task<ApiKeySettingsResponse> GetSettingsAsync(CancellationToken cancellationToken = default)
     {

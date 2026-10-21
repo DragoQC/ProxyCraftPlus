@@ -11,7 +11,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="@csrf.RequestToken" />
-    <title>@ViewData["Title"] · ProxyCraft</title>
+    <title>@ViewData["Title"] · ProxyCraftPlus</title>
     <link rel="icon" type="image/svg+xml" sizes="any" href="~/logo.svg" asp-append-version="true" />
     <script src="~/js/theme.js" asp-append-version="true">
     </script>
@@ -32,10 +32,10 @@
     <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:px-4 focus:py-2">Skip to content</a>
     <header class="app-header">
         <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8">
-            <a href="/" aria-label="ProxyCraft home" class="flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+            <a href="/" aria-label="ProxyCraftPlus home" class="flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
                 <img src="~/logo.svg" asp-append-version="true" alt="" width="36" height="36" class="app-logo size-9 shrink-0" />
                 <span class="hidden sm:block">
-                    <span class="block font-semibold tracking-tight">ProxyCraft</span>
+                    <span class="block font-semibold tracking-tight">ProxyCraftPlus</span>
                     <span class="text-muted block text-xs">Minecraft proxy</span>
                 </span>
             </a>
@@ -84,7 +84,7 @@
                     </svg>
                     <span class="sr-only sm:not-sr-only">Dashboard</span>
                 </a>
-                <a href="/proxies" class="nav-link @(actionName == "Proxies" ? "is-active" : "")" aria-label="Configured proxies" title="Configured proxies" aria-current="@(actionName == "Proxies" ? "page" : null)">
+                <a href="/proxies" class="nav-link @(actionName is "Proxies" or "Rcon" ? "is-active" : "")" aria-label="Configured proxies" title="Configured proxies" aria-current="@(actionName is "Proxies" or "Rcon" ? "page" : null)">
                     <svg aria-hidden="true" class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 12h6m0 0 7-7h5M9 12l7 7h5M18 2l3 3-3 3m0 8 3 3-3 3" />
                     </svg>

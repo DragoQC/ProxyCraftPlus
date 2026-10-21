@@ -5,10 +5,10 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using ProxyCraft.Data;
-using ProxyCraft.Models;
+using ProxyCraftPlus.Data;
+using ProxyCraftPlus.Models;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 public sealed record ListenerStatus(
     int? ListeningPort,
@@ -46,7 +46,7 @@ public sealed class MinecraftProxyService(
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await using AsyncServiceScope scope = scopes.CreateAsyncScope();
-        ProxyCraftDbContext database = scope.ServiceProvider.GetRequiredService<ProxyCraftDbContext>();
+        ProxyCraftPlusDbContext database = scope.ServiceProvider.GetRequiredService<ProxyCraftPlusDbContext>();
         List<Proxy> proxies = await database.Proxies.AsNoTracking().ToListAsync(cancellationToken);
         foreach (Proxy proxy in proxies)
         {
@@ -63,7 +63,7 @@ public sealed class MinecraftProxyService(
         try
         {
             await using AsyncServiceScope scope = scopes.CreateAsyncScope();
-            ProxyCraftDbContext database = scope.ServiceProvider.GetRequiredService<ProxyCraftDbContext>();
+            ProxyCraftPlusDbContext database = scope.ServiceProvider.GetRequiredService<ProxyCraftPlusDbContext>();
             Proxy? proxy = await database.Proxies.AsNoTracking().SingleOrDefaultAsync((Proxy row) => row.Id == id, _shutdown.Token);
             await ReplaceRouteAsync(id, proxy);
         }

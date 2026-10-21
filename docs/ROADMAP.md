@@ -9,7 +9,7 @@
 - [x] Mobile proxy cards, icon-only mobile branding/theme picker, and automatic Rainbow effects without a manual toggle.
 - [x] Home CPU/RAM/disk capacity and usage cards, with Linux cgroup v1/v2 support and a shared metrics API.
 - [x] Node-free Tailwind builds through dotnet/MSBuild; no npm modules or separate CSS watcher.
-- [x] Debian 13 curl-to-bash installer downloading the public DragoQC/ProxyCraft repository, and Docker/Compose deployment with persistent data and cookie keys.
+- [x] Debian 13 curl-to-bash installer downloading the public DragoQC/ProxyCraftPlus repository, and Docker/Compose deployment with persistent data and cookie keys.
 - [x] Shared HTTP API for UI and external callers.
 - [x] SQLite with EF Core 10.0.12 and locked dependencies.
 - [x] `User` and `Proxy` inherit `BaseModel` with creation/modification timestamps and active state.
@@ -46,9 +46,16 @@
 - [x] Cached TCP reachability checks and live status in the list/API, independent of stored enablement.
 - [x] Test actual parsing, forwarding, route isolation, backend health/recovery, listener changes, and cancellation.
 
-- [x] Optional per-route native RCON forwarding, unique public/backend ports, occupied-port rejection before save, isolated session resets, and discovery metadata for RconCraft.
 
 ## Later
 
 - [ ] Full Minecraft status responses (TCP reachability is implemented).
 - [ ] Deliberate schema evolution strategy, with migration approval before any migration work.
+
+## Plus additions
+
+- [x] Independent application, repository, database, cookie identity, key ring, and installer/service names.
+- [x] Optional per-route backend RCON setup page and terminal action.
+- [x] API-key-only RCON authentication checks and command/response relay through the shared web endpoint.
+- [x] Bounded native RCON client, request-only passwords, no public RCON sockets, and no automatic command retry.
+- [ ] RconCraft client transport integration with the relay API.

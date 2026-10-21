@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ProxyCraft.Api.Contracts;
+namespace ProxyCraftPlus.Api.Contracts;
 
 public class CredentialsRequest
 {

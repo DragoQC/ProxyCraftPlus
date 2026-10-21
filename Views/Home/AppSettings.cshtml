@@ -16,12 +16,12 @@
             <div id="public-message-fields" class="hidden space-y-4">
                 <div>
                     <label for="publicDashboardTitle" class="field-label">Welcome title</label>
-                    <input id="publicDashboardTitle" name="publicDashboardTitle" class="field" maxlength="120" value="@ProxyCraft.Configuration.ApplicationSettings.DefaultPublicDashboardTitle" required disabled />
+                    <input id="publicDashboardTitle" name="publicDashboardTitle" class="field" maxlength="120" value="@ProxyCraftPlus.Configuration.ApplicationSettings.DefaultPublicDashboardTitle" required disabled />
                     <p class="mt-2 text-xs text-muted">The page heading. Up to 120 characters; plain text only.</p>
                 </div>
                 <div>
                     <label for="publicDashboardMessage" class="field-label">Welcome message</label>
-                    <textarea id="publicDashboardMessage" name="publicDashboardMessage" class="field resize-y" rows="3" maxlength="500" disabled>@ProxyCraft.Configuration.ApplicationSettings.DefaultPublicDashboardMessage</textarea>
+                    <textarea id="publicDashboardMessage" name="publicDashboardMessage" class="field resize-y" rows="3" maxlength="500" disabled>@ProxyCraftPlus.Configuration.ApplicationSettings.DefaultPublicDashboardMessage</textarea>
                     <p class="mt-2 text-xs text-muted">Optional paragraph below the title. Up to 500 characters; plain text only.</p>
                 </div>
             </div>
@@ -73,7 +73,7 @@
             <button type="submit" class="button-primary" disabled>Set up authenticator</button>
         </form>
         <form id="two-factor-confirm" method="post" asp-antiforgery="false" class="mt-5 hidden space-y-4">
-            <p class="text-sm text-muted">Add an account manually in your authenticator: choose a time-based key, name it ProxyCraft, and enter this secret. Setup expires after ten minutes.</p>
+            <p class="text-sm text-muted">Add an account manually in your authenticator: choose a time-based key, name it ProxyCraftPlus, and enter this secret. Setup expires after ten minutes.</p>
             <div>
                 <label for="authenticator-secret" class="field-label">Authenticator secret</label>
                 <input id="authenticator-secret" class="field font-mono" readonly autocomplete="off" spellcheck="false" />

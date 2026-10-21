@@ -1,7 +1,7 @@
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Configuration;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Configuration;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 public sealed class SystemMetricsService(DataPaths paths) : BackgroundService
 {

@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/App_Data/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

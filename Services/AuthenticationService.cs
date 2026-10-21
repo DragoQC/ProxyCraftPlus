@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Configuration;
-using ProxyCraft.Data;
-using ProxyCraft.Models;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Configuration;
+using ProxyCraftPlus.Data;
+using ProxyCraftPlus.Models;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 public sealed class AuthenticationService(
-    ProxyCraftDbContext database,
+    ProxyCraftPlusDbContext database,
     SettingsStore settings,
     IPasswordHasher<User> passwordHasher)
 {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Antiforgery;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Services;
 
-namespace ProxyCraft.Security;
+namespace ProxyCraftPlus.Security;
 
 public sealed class ApiKeyMiddleware(RequestDelegate next)
 {

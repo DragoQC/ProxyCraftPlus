@@ -1,4 +1,4 @@
-namespace ProxyCraft.Api.Documentation;
+namespace ProxyCraftPlus.Api.Documentation;
 
 public sealed record ApiFieldReference(
     string Name,

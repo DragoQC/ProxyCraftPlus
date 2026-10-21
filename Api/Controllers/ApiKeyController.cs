@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Services;
 
-namespace ProxyCraft.Api.Controllers;
+namespace ProxyCraftPlus.Api.Controllers;
 
 [ApiController, Route("api/v1/settings/api-key"), ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public sealed class ApiKeyController(ApiKeyService keys) : ControllerBase

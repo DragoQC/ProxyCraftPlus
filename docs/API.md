@@ -24,8 +24,8 @@ The MVC UI and external clients use `/api/v1`. Endpoints delegate to the same ap
 | GET | `/api/v1/proxies?search=...` | List configured proxies; optional case-insensitive domain/destination search |
 | GET | `/api/v1/proxies/{id}/events` | Latest 20 saved player login attempts for this proxy, newest first; 404 if the proxy is missing |
 | GET | `/api/v1/proxies/{id}/connections` | Currently open named forwarding sessions, held in memory, newest first; 404 if the proxy is missing |
-| POST | `/api/v1/proxies` | Create a domain route; returns 201, or 409 for a duplicate domain/destination, conflicting RCON port, or failed RCON bind |
-| PUT | `/api/v1/proxies/{id}` | Save domain/destination and replace only this live route; 200, 404 if missing, 409 for a duplicate domain/destination, conflicting RCON port, or failed RCON bind |
+| POST | `/api/v1/proxies` | Create a domain route; returns 201, or 409 for a duplicate domain/destination |
+| PUT | `/api/v1/proxies/{id}` | Save domain/destination and replace only this live route; 200, 404 if missing, 409 for a duplicate domain/destination |
 | DELETE | `/api/v1/proxies/{id}` | Delete the saved route and its connection history, and close only its connections; 204, or 404 if missing |
 | GET | `/api/v1/settings/api-key` | Read `isConfigured` and display `keyPrefix`; never returns the secret or hash |
 | POST | `/api/v1/settings/api-key` | Generate or replace the single API key; returns `apiKey` and `keyPrefix` once |
@@ -83,7 +83,7 @@ GET `/api/v1/system/metrics` returns:
 }
 ```
 
-These are guest/container resources available to ProxyCraft, rather than process-only CPU or working-set memory. CPU and RAM monitoring use Linux proc/cgroup counters. Visible cgroup v1/v2 quotas, inherited limits, and cpusets constrain CPU capacity; fractional quotas can produce values such as `1.5` cores. CPU usage is normalized to that capacity and requires two samples. Guest RAM usage uses `MemTotal - MemAvailable`; container RAM uses its charged memory (including cache) and memory limit. Unreadable counters never substitute host-wide usage against a container limit.
+These are guest/container resources available to ProxyCraftPlus, rather than process-only CPU or working-set memory. CPU and RAM monitoring use Linux proc/cgroup counters. Visible cgroup v1/v2 quotas, inherited limits, and cpusets constrain CPU capacity; fractional quotas can produce values such as `1.5` cores. CPU usage is normalized to that capacity and requires two samples. Guest RAM usage uses `MemTotal - MemAvailable`; container RAM uses its charged memory (including cache) and memory limit. Unreadable counters never substitute host-wide usage against a container limit.
 
 Disk refers to the filesystem containing the configured app-data directory, not a sum of all disks or Proxmox storage pools. Used space is total minus filesystem free space. Samples refresh in the background every 2 seconds; Home polls every 5 seconds. Percentages range from 0 to 100; missing, unsupported, and not-yet-sampled values are null. CPU/RAM usage is unavailable on non-Linux hosts; disk uses .NET filesystem information. The endpoint follows the existing dashboard/API-key rules and is listed in the in-app reference.
 
@@ -178,35 +178,26 @@ Full Minecraft status details and multi-user management are not implemented. Das
 
 ### Public dashboard settings
 
-`PUT /api/v1/settings/app` accepts `publicDashboardEnabled`, `showPublicDomains`, optional `publicDashboardTitle`, and optional `publicDashboardMessage`. The title defaults to `Welcome to ProxyCraft` (1–120 characters), and the optional paragraph defaults to `The Minecraft proxy that just works.` (0–500 characters). Titles must contain non-whitespace text. Both fields are trimmed before saving and rendered as text. Send `publicDashboardMessage: ""` to clear the paragraph; whitespace-only messages also become empty, and no paragraph is rendered. An empty saved message remains empty after restart. Omitted/null text fields retain their saved values, including when hiding the editors. Invalid supplied text returns 400 without changing settings. Existing saved messages become the paragraph; missing titles use the default without rewriting the settings file at startup.
+`PUT /api/v1/settings/app` accepts `publicDashboardEnabled`, `showPublicDomains`, optional `publicDashboardTitle`, and optional `publicDashboardMessage`. The title defaults to `Welcome to ProxyCraftPlus` (1–120 characters), and the optional paragraph defaults to `The Minecraft proxy that just works.` (0–500 characters). Titles must contain non-whitespace text. Both fields are trimmed before saving and rendered as text. Send `publicDashboardMessage: ""` to clear the paragraph; whitespace-only messages also become empty, and no paragraph is rendered. An empty saved message remains empty after restart. Omitted/null text fields retain their saved values, including when hiding the editors. Invalid supplied text returns 400 without changing settings. Existing saved messages become the paragraph; missing titles use the default without rewriting the settings file at startup.
 
 Turning public access off forces `showPublicDomains` to false, even if an external caller sends true. Re-enabling does not automatically re-enable domain visibility. Settings remain in `settings.json`; no database schema change is needed.
 
-`GET /api/v1/public/dashboard` returns `{ "domains": ["play.example.com"], "message": "The Minecraft proxy that just works.", "title": "Welcome to ProxyCraft" }` when both visibility options are on. Hidden names produce an empty array; disabling public access returns 404. MVC `/dashboard` is an admin preview using the normal management access rules; anonymous visitors still use `/` when enabled. Public domain buttons copy names without making management API calls; their confirmation clears after two seconds.
+`GET /api/v1/public/dashboard` returns `{ "domains": ["play.example.com"], "message": "The Minecraft proxy that just works.", "title": "Welcome to ProxyCraftPlus" }` when both visibility options are on. Hidden names produce an empty array; disabling public access returns 404. MVC `/dashboard` is an admin preview using the normal management access rules; anonymous visitors still use `/` when enabled. Public domain buttons copy names without making management API calls; their confirmation clears after two seconds.
 
-## Optional RCON forwarding
+## Optional RCON API relay
 
-Create/edit proxy requests accept nullable `rconEnabled`, `rconListenPort`, and `rconDestinationPort`. New routes default to disabled forwarding and port 25575 on both sides. Omitted/null fields preserve existing values on edits, so older API clients do not silently disable RCON. `rconListenPort` is the TCP port on ProxyCraft; `rconDestinationPort` is the RCON port on the same `destinationHost` as the Minecraft backend. Supplied ports must be 1–65535.
+Proxy responses include `rconEnabled` (default false) and `rconDestinationPort` (default 25575). The existing create/edit endpoints accept optional matching fields. Omitted values are preserved on edits. No public RCON port exists; the backend host is always the route's saved `destinationHost`.
 
-```json
-{
-  "domain": "play.example.com",
-  "destinationHost": "192.168.1.10",
-  "destinationPort": 25565,
-  "rconEnabled": true,
-  "rconListenPort": 25575,
-  "rconDestinationPort": 25575
-}
-```
+| Method | Path | Behavior |
+| --- | --- | --- |
+| PUT | `/api/v1/proxies/{id}/rcon` | Save `{ "enabled": true, "destinationPort": 25575 }`; return the updated proxy. Does not disconnect Minecraft sessions. |
+| POST | `/api/v1/proxies/{id}/rcon/check` | Accept `{ "password": "backend-secret" }`; authenticate without sending a command; return `{ "connected": true, "checkedAt": "UTC timestamp" }`. |
+| POST | `/api/v1/proxies/{id}/rcon/commands` | Accept `{ "password": "backend-secret", "command": "list" }`; return `{ "output": "server response", "truncated": false, "completedAt": "UTC timestamp" }`. |
 
-An enabled public RCON port must be unique across routes and different from the Minecraft listener port. A new public socket is reserved before persistence; duplicate/occupied/unavailable ports return 409 without saving changes or interrupting the old route. A partial unique SQLite index also enforces enabled-port uniqueness. Startup adds only the specifically approved missing RCON columns/index, leaving existing routes disabled by default and preserving all users, keys, and connection history.
+Both POST endpoints **always require a valid `X-API-Key`**. Dashboard cookies/CSRF alone do not authorize relay calls, even with sign-in off. Configuration uses the existing dashboard-cookie/CSRF or API-key management boundary. Missing routes return 404; disabled routes return 409; invalid input returns 400; backend authentication/protocol/connection failures return 502. Invalid/missing keys return 401.
 
-Proxy responses also include `rconEnabled`, `rconListenPort`, `rconDestinationPort`, nullable `rconListeningPort`, and nullable `rconListenerError`. The configured values are persisted; actual listener state/error stays in memory. A startup bind failure leaves Minecraft routing available and reports the RCON error. Save the route again after correcting/freeing the port to retry. The proxy list shows the forwarding ports beneath the destination. The existing Active/backend health indicator still describes the Minecraft port, not RCON authentication.
+The client identifies the selected domain using its ID from `GET /api/v1/proxies`. All routes use the same web/API port; different backends may use identical internal RCON ports. Protect the API with HTTPS or a trusted private transport. Credentials travel in the request body, never the URL. Plus never persists or intentionally logs passwords, command text, or output. Keep proxy/access logging configured accordingly.
 
-RCON clients use the Minecraft domain **with the selected public RCON port**, for example `play.example.com:25575`. Another backend on the same public IP needs another public port, even with a different domain. RCON packets do not carry a destination domain, and the Minecraft port/connection cannot carry standard RCON. Forward/publish the selected TCP ports on routers or Docker as applicable; ProxyCraft does not change network configuration.
+A relay check authenticates only. A command authenticates and sends once, never automatically retries, and returns the server's text response. Success means the command exchange completed; an unknown/rejected Minecraft command can still be returned as ordinary text. After timeout/network failure, the command might already have executed.
 
-`RconProxyService` forwards bytes without parsing, executing, or logging commands or storing RCON passwords. RconCraft/other RCON clients handle backend authentication and command output. API keys and dashboard sign-in protect management, not the raw TCP RCON port. Native RCON is unencrypted; use trusted LAN/VPN paths or restrict access with a firewall.
-
-Forwarding is limited to 128 simultaneous RCON sessions, with a five-second backend connect deadline, two-minute idle timeout, and pooled 16 KiB buffers. DNS is resolved once per connection and local proxy-listener destinations are rejected before connecting. Editing/disabling/deleting a route closes its RCON sessions; unrelated routes remain connected. An edit that changes only RCON fields keeps that route's Minecraft sessions alive. Existing Minecraft/no-op edit behavior is retained for other saves. RCON sessions are not Minecraft players and never create player history or live-player counts.
-
-RconCraft can read this existing proxy-list endpoint to offer active routes whose RCON port is listening, using `domain` plus `rconListenPort` as the client endpoint. No command API, RCON client, player-list parsing, or command completion is added to ProxyCraft.
+The relay limits backend connections to eight, queue waits to five seconds, checks to three seconds, commands to ten seconds, request strings to 1024 UTF-8 bytes, RCON packets to 64 KiB, and output to 256 KiB. No relay sessions are recorded as Minecraft player sessions/history. A request already in flight may finish against its captured backend after a route edit or disable.

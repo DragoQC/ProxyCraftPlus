@@ -1,4 +1,4 @@
-namespace ProxyCraft.Api.Contracts;
+namespace ProxyCraftPlus.Api.Contracts;
 
 public sealed record SystemMetricsResponse(
     double? TotalCpuCores,

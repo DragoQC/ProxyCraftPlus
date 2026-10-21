@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using ProxyCraft.Configuration;
-using ProxyCraft.Api.Documentation;
-using ProxyCraft.Api.Hubs;
-using ProxyCraft.Data;
-using ProxyCraft.Models;
-using ProxyCraft.Security;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Configuration;
+using ProxyCraftPlus.Api.Documentation;
+using ProxyCraftPlus.Api.Hubs;
+using ProxyCraftPlus.Data;
+using ProxyCraftPlus.Models;
+using ProxyCraftPlus.Security;
+using ProxyCraftPlus.Services;
 using System.Threading.RateLimiting;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -25,17 +25,19 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<DomainHubConnections>();
 builder.Services.AddSingleton<DomainEventPublisher>();
 builder.Services.AddProblemDetails();
-builder.Services.AddAntiforgery((Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions options) => options.HeaderName = "X-CSRF-TOKEN");
+builder.Services.AddAntiforgery((Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions options) =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+    options.Cookie.Name = "ProxyCraftPlus.Antiforgery";
+});
 builder.Services.Configure<ProxyOptions>(builder.Configuration.GetSection(ProxyOptions.SectionName));
 builder.Services.AddSingleton<DataPaths>();
-string? keysDirectory = builder.Configuration["DataProtection:KeysDirectory"];
-if (!string.IsNullOrWhiteSpace(keysDirectory))
-{
-    builder.Services.AddDataProtection().SetApplicationName("ProxyCraft")
-        .PersistKeysToFileSystem(new DirectoryInfo(Path.GetFullPath(keysDirectory, builder.Environment.ContentRootPath)));
-}
+DataPaths dataPaths = new(builder.Configuration, builder.Environment);
+string keysDirectory = builder.Configuration["DataProtection:KeysDirectory"] ?? Path.Combine(dataPaths.DirectoryPath, "keys");
+builder.Services.AddDataProtection().SetApplicationName("ProxyCraftPlus")
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.GetFullPath(keysDirectory, builder.Environment.ContentRootPath)));
 builder.Services.AddSingleton<SettingsStore>();
-builder.Services.AddDbContext<ProxyCraftDbContext>((IServiceProvider services, DbContextOptionsBuilder options) =>
+builder.Services.AddDbContext<ProxyCraftPlusDbContext>((IServiceProvider services, DbContextOptionsBuilder options) =>
 {
     DataPaths paths = services.GetRequiredService<DataPaths>();
     SqliteConnectionStringBuilder connectionString = new()
@@ -45,7 +47,7 @@ builder.Services.AddDbContext<ProxyCraftDbContext>((IServiceProvider services, D
     options.UseSqlite(connectionString.ToString());
 });
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddScoped<ProxyCraft.Services.AuthenticationService>();
+builder.Services.AddScoped<ProxyCraftPlus.Services.AuthenticationService>();
 builder.Services.AddScoped<TwoFactorService>();
 builder.Services.AddScoped<ProxyService>();
 builder.Services.AddScoped<PublicDashboardService>();
@@ -53,8 +55,8 @@ builder.Services.AddScoped<ConnectionEventService>();
 builder.Services.AddScoped<ApiKeyService>();
 builder.Services.AddSingleton<MinecraftProxyService>();
 builder.Services.AddHostedService((IServiceProvider services) => services.GetRequiredService<MinecraftProxyService>());
-builder.Services.AddSingleton<RconProxyService>();
-builder.Services.AddHostedService((IServiceProvider services) => services.GetRequiredService<RconProxyService>());
+builder.Services.AddSingleton<RconClient>();
+builder.Services.AddSingleton<RconRelayService>();
 builder.Services.AddSingleton<SystemMetricsService>();
 builder.Services.AddHostedService((IServiceProvider services) => services.GetRequiredService<SystemMetricsService>());
 builder.Services.AddScoped<SessionCookieEvents>();
@@ -66,7 +68,7 @@ builder.Services.AddAuthentication("Management")
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationHandler.SchemeName, null)
     .AddCookie((CookieAuthenticationOptions options) =>
     {
-        options.Cookie.Name = "ProxyCraft.Session";
+        options.Cookie.Name = "ProxyCraftPlus.Session";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.LoginPath = "/account/login";
@@ -78,6 +80,8 @@ builder.Services.AddSingleton<IAuthorizationHandler, OptionalAuthenticationHandl
 builder.Services.AddAuthorization((Microsoft.AspNetCore.Authorization.AuthorizationOptions options) =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder().AddRequirements(new OptionalAuthenticationRequirement()).Build();
+    options.AddPolicy("RconRelay", (AuthorizationPolicyBuilder policy) =>
+        policy.AddAuthenticationSchemes(ApiKeyAuthenticationHandler.SchemeName).RequireAuthenticatedUser());
     options.AddPolicy("DomainEvents", (AuthorizationPolicyBuilder policy) =>
         policy.AddAuthenticationSchemes(ApiKeyAuthenticationHandler.SchemeName).RequireAuthenticatedUser());
 });

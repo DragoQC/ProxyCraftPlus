@@ -1,7 +1,7 @@
 using System.Net.Sockets;
 using System.Text;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 internal sealed record MinecraftLoginStart(
     string PlayerName,

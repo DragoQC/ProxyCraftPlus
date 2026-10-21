@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ProxyCraft.Api.Contracts;
+namespace ProxyCraftPlus.Api.Contracts;
 
 public sealed record ProxyResponse(
     int Id,
@@ -12,10 +12,7 @@ public sealed record ProxyResponse(
     DateTimeOffset? LastCheckedAt,
     int LiveConnectionCount,
     bool RconEnabled = false,
-    int RconListenPort = 25575,
-    int RconDestinationPort = 25575,
-    int? RconListeningPort = null,
-    string? RconListenerError = null);
+    int RconDestinationPort = 25575);
 
 public sealed class CreateProxyRequest
 {
@@ -29,9 +26,6 @@ public sealed class CreateProxyRequest
     public int DestinationPort { get; set; } = 25565;
 
     public bool? RconEnabled { get; set; }
-
-    [Range(1, 65535)]
-    public int? RconListenPort { get; set; }
 
     [Range(1, 65535)]
     public int? RconDestinationPort { get; set; }

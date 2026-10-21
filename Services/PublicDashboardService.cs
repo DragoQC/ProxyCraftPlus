@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Data;
-using ProxyCraft.Models;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Data;
+using ProxyCraftPlus.Models;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 public sealed class PublicDashboardService(
     SettingsStore settings,
-    ProxyCraftDbContext database)
+    ProxyCraftPlusDbContext database)
 {
     public async Task<PublicDashboardResponse?> GetAsync(CancellationToken cancellationToken, bool preview = false)
     {

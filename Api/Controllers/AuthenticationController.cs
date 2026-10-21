@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Models;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Models;
+using ProxyCraftPlus.Services;
 
-namespace ProxyCraft.Api.Controllers;
+namespace ProxyCraftPlus.Api.Controllers;
 
 [ApiController, Route("api/v1/authentication"), ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public sealed class AuthenticationController(

@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Services;
 
-namespace ProxyCraft.Api.Controllers;
+namespace ProxyCraftPlus.Api.Controllers;
 
 [ApiController, Route("api/v1/authentication/two-factor")]
 [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]

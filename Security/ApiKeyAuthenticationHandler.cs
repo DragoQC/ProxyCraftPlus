@@ -5,9 +5,9 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Services;
 
-namespace ProxyCraft.Security;
+namespace ProxyCraftPlus.Security;
 
 public sealed class ApiKeyAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,

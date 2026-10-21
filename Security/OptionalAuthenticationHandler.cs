@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Services;
 
-namespace ProxyCraft.Security;
+namespace ProxyCraftPlus.Security;
 
 public sealed class OptionalAuthenticationRequirement : IAuthorizationRequirement;
 

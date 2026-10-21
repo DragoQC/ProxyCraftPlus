@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Data;
-using ProxyCraft.Models;
-using ProxyCraft.Security;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Data;
+using ProxyCraftPlus.Models;
+using ProxyCraftPlus.Security;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
 internal sealed record TwoFactorEnrollment(
     int UserId,
@@ -19,13 +19,13 @@ internal sealed record TwoFactorEnrollment(
     DateTimeOffset CreatedAt);
 
 public sealed class TwoFactorService(
-    ProxyCraftDbContext database,
+    ProxyCraftPlusDbContext database,
     SettingsStore settings,
     IPasswordHasher<User> passwordHasher,
     IDataProtectionProvider protection)
 {
-    private readonly IDataProtector _secrets = protection.CreateProtector("ProxyCraft.TwoFactor.Secret.v1");
-    private readonly IDataProtector _enrollment = protection.CreateProtector("ProxyCraft.TwoFactor.Enrollment.v1");
+    private readonly IDataProtector _secrets = protection.CreateProtector("ProxyCraftPlus.TwoFactor.Secret.v1");
+    private readonly IDataProtector _enrollment = protection.CreateProtector("ProxyCraftPlus.TwoFactor.Enrollment.v1");
 
     public async Task<TwoFactorSettingsResponse> GetAsync(int userId, CancellationToken cancellationToken)
     {
@@ -44,8 +44,8 @@ public sealed class TwoFactorService(
         string secret = TotpCodes.CreateSecret();
         TwoFactorEnrollment enrollment = new(user.Id, user.SecurityStamp, secret, DateTimeOffset.UtcNow);
         string token = _enrollment.Protect(JsonSerializer.Serialize(enrollment));
-        string label = Uri.EscapeDataString("ProxyCraft:" + user.UsernameOrEmail);
-        string uri = $"otpauth://totp/{label}?secret={secret}&issuer=ProxyCraft&algorithm=SHA1&digits=6&period=30";
+        string label = Uri.EscapeDataString("ProxyCraftPlus:" + user.UsernameOrEmail);
+        string uri = $"otpauth://totp/{label}?secret={secret}&issuer=ProxyCraftPlus&algorithm=SHA1&digits=6&period=30";
         return new TwoFactorSetupResponse(secret, uri, token);
     }
 

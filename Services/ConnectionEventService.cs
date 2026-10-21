@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using ProxyCraft.Api.Contracts;
-using ProxyCraft.Data;
-using ProxyCraft.Models;
+using ProxyCraftPlus.Api.Contracts;
+using ProxyCraftPlus.Data;
+using ProxyCraftPlus.Models;
 
-namespace ProxyCraft.Services;
+namespace ProxyCraftPlus.Services;
 
-public sealed class ConnectionEventService(ProxyCraftDbContext database)
+public sealed class ConnectionEventService(ProxyCraftPlusDbContext database)
 {
     public async Task RecordAsync(int proxyId, string domain, string playerName, CancellationToken cancellationToken)
     {

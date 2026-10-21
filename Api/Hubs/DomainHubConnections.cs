@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ProxyCraft.Api.Hubs;
+namespace ProxyCraftPlus.Api.Hubs;
 
 internal sealed record DomainSubscriber(
     string KeyHash,

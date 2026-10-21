@@ -1,13 +1,13 @@
 services:
-  proxycraft:
-    image: proxycraft:local
+  proxycraftplus:
+    image: proxycraftplus:local
     build: .
     restart: unless-stopped
     ports:
       - "8080:8080"
       - "25565:25565"
     volumes:
-      - proxycraft-data:/var/lib/proxycraft
+      - proxycraftplus-data:/var/lib/proxycraftplus
 
 volumes:
-  proxycraft-data:
+  proxycraftplus-data:

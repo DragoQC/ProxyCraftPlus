@@ -15,7 +15,7 @@
             // The picker still works when storage is unavailable.
         }
     };
-    const savedTheme = read("proxycraft.theme");
+    const savedTheme = read("proxycraftplus.theme");
     root.dataset.theme = themes.includes(savedTheme) ? savedTheme : "light";
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -150,7 +150,7 @@
         for (const choice of choices) {
             choice.addEventListener("click", () => {
                 root.dataset.theme = choice.dataset.themeChoice;
-                save("proxycraft.theme", root.dataset.theme);
+                save("proxycraftplus.theme", root.dataset.theme);
                 synchronize();
             });
         }
@@ -173,7 +173,7 @@
         document.addEventListener("visibilitychange", synchronize);
         reducedMotion.addEventListener("change", synchronize);
         window.addEventListener("pageshow", () => {
-            const saved = read("proxycraft.theme");
+            const saved = read("proxycraftplus.theme");
             if (themes.includes(saved)) {
                 root.dataset.theme = saved;
             }

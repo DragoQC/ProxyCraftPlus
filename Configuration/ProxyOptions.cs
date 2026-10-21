@@ -1,4 +1,4 @@
-namespace ProxyCraft.Configuration;
+namespace ProxyCraftPlus.Configuration;
 
 public sealed class ProxyOptions
 {

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProxyCraft.Services;
+using ProxyCraftPlus.Services;
 
-namespace ProxyCraft.Controllers;
+namespace ProxyCraftPlus.Controllers;
 
 [AllowAnonymous]
 public sealed class AccountController(SettingsStore settings) : Controller

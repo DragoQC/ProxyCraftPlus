@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using ProxyCraft.Models;
+using ProxyCraftPlus.Models;
 
-namespace ProxyCraft.Data;
+namespace ProxyCraftPlus.Data;
 
-public sealed class ProxyCraftDbContext(DbContextOptions<ProxyCraftDbContext> options) : DbContext(options)
+public sealed class ProxyCraftPlusDbContext(DbContextOptions<ProxyCraftPlusDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
 
@@ -23,10 +23,7 @@ public sealed class ProxyCraftDbContext(DbContextOptions<ProxyCraftDbContext> op
 
         modelBuilder.Entity<Proxy>().ToTable("proxies");
         modelBuilder.Entity<Proxy>().HasIndex((Proxy proxy) => proxy.Domain).IsUnique();
-        modelBuilder.Entity<Proxy>().HasIndex((Proxy proxy) => proxy.RconListenPort)
-            .IsUnique().HasFilter("\"RconEnabled\" = 1");
         modelBuilder.Entity<Proxy>().Property((Proxy proxy) => proxy.RconEnabled).HasDefaultValue(false);
-        modelBuilder.Entity<Proxy>().Property((Proxy proxy) => proxy.RconListenPort).HasDefaultValue(25575);
         modelBuilder.Entity<Proxy>().Property((Proxy proxy) => proxy.RconDestinationPort).HasDefaultValue(25575);
         modelBuilder.Entity<Proxy>().Property((Proxy proxy) => proxy.Domain).HasMaxLength(253);
         modelBuilder.Entity<Proxy>().Property((Proxy proxy) => proxy.DestinationHost).HasMaxLength(253);

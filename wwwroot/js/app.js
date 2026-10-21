@@ -1,3 +1,5 @@
+import { initializeRconSettings } from "./rcon-settings.js";
+
 const page = document.body.dataset.page;
 const csrf = document.querySelector('meta[name="csrf-token"]');
 const copyFeedbackTimers = new WeakMap();
@@ -101,6 +103,10 @@ async function initialize() {
         const [settings, proxies] = await Promise.all([api("/settings/proxy"), api("/proxies")]);
         document.querySelector("#listen-port").textContent = settings.listenPort;
         document.querySelector("#proxy-count").textContent = proxies.length;
+    }
+
+    if (page === "rcon-settings") {
+        await initializeRconSettings(api, handleForm);
     }
 
     if (page === "proxy-settings") {
@@ -449,21 +455,6 @@ function initializeProxies() {
 
     form.elements.destinationHost.addEventListener("input", updateDestinationWarning);
 
-    function updateRconFields() {
-        const enabled = form.elements.rconEnabled.checked;
-        const fields = document.querySelector("#rcon-forwarding-fields");
-        fields.disabled = !enabled;
-        fields.classList.toggle("hidden", !enabled);
-    }
-    form.elements.rconEnabled.addEventListener("change", updateRconFields);
-    for (const field of [form.elements.rconListenPort, form.elements.rconDestinationPort]) {
-        field.addEventListener("invalid", (event) => {
-            event.preventDefault();
-            showError(new Error("Enter RCON ports between 1 and 65535."), error);
-            field.focus();
-        });
-    }
-
     function openEditor(proxy = null) {
         editingProxyId = proxy?.id ?? null;
         form.reset();
@@ -474,15 +465,11 @@ function initializeProxies() {
             form.elements.domain.value = proxy.domain;
             form.elements.destinationHost.value = proxy.destinationHost;
             form.elements.destinationPort.value = proxy.destinationPort;
-            form.elements.rconEnabled.checked = proxy.rconEnabled;
-            form.elements.rconListenPort.value = proxy.rconListenPort;
-            form.elements.rconDestinationPort.value = proxy.rconDestinationPort;
         }
         document.querySelector("#proxy-dialog-title").textContent = proxy ? "Edit proxy" : "Add proxy";
         form.querySelector('button[type="submit"]').textContent = proxy ? "Save changes" : "Save proxy";
         error.classList.add("hidden");
         updateDestinationWarning();
-        updateRconFields();
         dialog.showModal();
     }
 
@@ -509,7 +496,7 @@ function initializeProxies() {
         try {
             const proxies = await api(`/proxies?search=${encodeURIComponent(search.value)}`, { signal: request.signal });
             const configuration = JSON.stringify([search.value, proxies.map((proxy) => [proxy.id, proxy.domain, proxy.destinationHost, proxy.destinationPort, proxy.isActive,
-                proxy.rconEnabled, proxy.rconListenPort, proxy.rconDestinationPort, proxy.rconListeningPort, proxy.rconListenerError])]);
+                proxy.rconEnabled, proxy.rconDestinationPort])]);
             if (configuration === renderedConfiguration) {
                 updateStatuses(proxies);
                 return;
@@ -551,9 +538,9 @@ function initializeProxies() {
                 destination.append(destinationLabel, address);
                 if (proxy.rconEnabled) {
                     const rcon = document.createElement("span");
-                    rcon.className = proxy.rconListenerError ? "mt-2 block font-sans text-xs text-danger" : "mt-2 block font-sans text-xs text-muted";
-                    rcon.textContent = `RCON :${proxy.rconListenPort} → :${proxy.rconDestinationPort}${proxy.rconListeningPort === null ? " · Not listening" : ""}`;
-                    rcon.title = proxy.rconListenerError || "RCON forwards to the same destination host.";
+                    rcon.className = "mt-2 block font-sans text-xs text-muted";
+                    rcon.textContent = `RCON API → :${proxy.rconDestinationPort}`;
+                    rcon.title = "RCON API relay uses this backend host.";
                     destination.append(rcon);
                 }
                 const status = row.insertCell();
@@ -631,7 +618,13 @@ function initializeProxies() {
                         remove.disabled = false;
                     }
                 });
-                buttons.append(connections, history, edit, remove);
+                const rconSetup = document.createElement("a");
+                rconSetup.href = `/proxies/${proxy.id}/rcon`;
+                rconSetup.className = "button-secondary size-11 shrink-0 p-0 md:size-9";
+                rconSetup.title = "Set up RCON";
+                rconSetup.setAttribute("aria-label", `Set up RCON for ${proxy.domain}`);
+                rconSetup.innerHTML = '<svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM7 8l4 4-4 4m6 0h4" /></svg>';
+                buttons.append(connections, history, rconSetup, edit, remove);
                 actions.append(buttons);
             }
             updateStatuses(proxies);
@@ -660,9 +653,6 @@ function initializeProxies() {
     handleForm("#proxy-create", async (data) => {
         const request = Object.fromEntries(data);
         request.destinationPort = Number(request.destinationPort);
-        request.rconEnabled = data.has("rconEnabled");
-        if (data.has("rconListenPort")) request.rconListenPort = Number(data.get("rconListenPort"));
-        if (data.has("rconDestinationPort")) request.rconDestinationPort = Number(data.get("rconDestinationPort"));
         await api(editingProxyId === null ? "/proxies" : `/proxies/${editingProxyId}`, {
             method: editingProxyId === null ? "POST" : "PUT", body: JSON.stringify(request)
         });

@@ -1,4 +1,4 @@
-namespace ProxyCraft.Models;
+namespace ProxyCraftPlus.Models;
 
 public sealed class User : BaseModel
 {

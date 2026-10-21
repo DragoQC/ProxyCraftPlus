@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
-using ProxyCraft.Api.Contracts;
+using ProxyCraftPlus.Api.Contracts;
 
-namespace ProxyCraft.Api.Documentation;
+namespace ProxyCraftPlus.Api.Documentation;
 
 public sealed class ApiReferenceService(
     IApiDescriptionGroupCollectionProvider descriptions,
@@ -80,7 +80,7 @@ public sealed class ApiReferenceService(
                 nameof(ProxyResponse.LastCheckedAt) => "UTC time of the latest TCP check; null until checked.",
                 nameof(UpdateAppSettingsRequest.ShowPublicDomains) => "Only available when publicDashboardEnabled is true; otherwise saved as false.",
                 nameof(UpdateAppSettingsRequest.PublicDashboardMessage) => "Optional plain-text paragraph, 0–500 characters. Send an empty string to clear it; omit/null to preserve the saved value. Defaults to The Minecraft proxy that just works.",
-                nameof(UpdateAppSettingsRequest.PublicDashboardTitle) => "Plain-text heading, 1–120 characters. Defaults to Welcome to ProxyCraft; omit to preserve the saved title.",
+                nameof(UpdateAppSettingsRequest.PublicDashboardTitle) => "Plain-text heading, 1–120 characters. Defaults to Welcome to ProxyCraftPlus; omit to preserve the saved title.",
                 nameof(PublicDashboardResponse.Message) => "Configured plain-text paragraph below the title; never interpreted as HTML.",
                 nameof(PublicDashboardResponse.Title) => "Configured plain-text welcome heading; never interpreted as HTML.",
                 nameof(ProxyResponse.LiveConnectionCount) => "Current named forwarding sessions for this proxy, held in memory. Excludes status pings and failed backend connections.",
@@ -233,13 +233,13 @@ public sealed class ApiReferenceService(
             {
                 PublicDashboardEnabled = true,
                 PublicDashboardMessage = "The Minecraft proxy that just works.",
-                PublicDashboardTitle = "Welcome to ProxyCraft"
+                PublicDashboardTitle = "Welcome to ProxyCraftPlus"
             }, ExampleOptions);
         }
 
         if (type == typeof(PublicDashboardResponse))
         {
-            return JsonSerializer.Serialize(new PublicDashboardResponse(["play.example.com"], "The Minecraft proxy that just works.", "Welcome to ProxyCraft"), ExampleOptions);
+            return JsonSerializer.Serialize(new PublicDashboardResponse(["play.example.com"], "The Minecraft proxy that just works.", "Welcome to ProxyCraftPlus"), ExampleOptions);
         }
 
         if (type == typeof(TwoFactorSettingsResponse))
@@ -264,7 +264,7 @@ public sealed class ApiReferenceService(
 
         if (type == typeof(TwoFactorSetupResponse))
         {
-            return JsonSerializer.Serialize(new TwoFactorSetupResponse("EXAMPLESECRET", "otpauth://totp/ProxyCraft:owner?secret=EXAMPLESECRET&issuer=ProxyCraft", "protected-enrollment-token"), ExampleOptions);
+            return JsonSerializer.Serialize(new TwoFactorSetupResponse("EXAMPLESECRET", "otpauth://totp/ProxyCraftPlus:owner?secret=EXAMPLESECRET&issuer=ProxyCraftPlus", "protected-enrollment-token"), ExampleOptions);
         }
 
         if (type == typeof(TwoFactorEnabledResponse))
