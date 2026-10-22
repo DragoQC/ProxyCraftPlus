@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProxyCraftPlus.Api.Contracts;
 using ProxyCraftPlus.Services;
@@ -19,9 +18,9 @@ public sealed class RconController(ProxyService proxies, RconRelayService relay)
         return response is null ? NotFound() : Ok(response);
     }
 
-    [Authorize(Policy = "RconRelay"), HttpPost("check")]
+    [HttpPost("check")]
     [EndpointSummary("Check backend RCON authentication")]
-    [EndpointDescription("Requires X-API-Key even when dashboard sign-in is off. Authenticates to this enabled route's backend without executing a command. Password is request-only; use HTTPS or a trusted private network.")]
+    [EndpointDescription("Accepts the dashboard cookie/CSRF pair or a valid X-API-Key under the existing management rules. Authenticates to this enabled route's backend without executing a command. Password is request-only; use HTTPS or a trusted private network.")]
     [ProducesResponseType<RconCheckResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -31,9 +30,9 @@ public sealed class RconController(ProxyService proxies, RconRelayService relay)
     public Task<ActionResult<RconCheckResponse>> Check(int id, RconCheckRequest request, CancellationToken cancellationToken) =>
         HandleAsync(() => relay.CheckAsync(id, request.Password, cancellationToken));
 
-    [Authorize(Policy = "RconRelay"), HttpPost("commands")]
+    [HttpPost("commands")]
     [EndpointSummary("Relay one RCON command")]
-    [EndpointDescription("Requires X-API-Key. Resolves the selected route to its saved backend, authenticates with the request password, sends the command once, and returns bounded text output. No credentials, commands, or output are persisted. No automatic command retry.")]
+    [EndpointDescription("Accepts the same dashboard cookie/CSRF or API-key authorization as management. Resolves the selected route to its saved backend, authenticates with the request password, sends the command once, and returns bounded text output. No credentials, commands, or output are persisted by the server. No automatic command retry.")]
     [ProducesResponseType<RconCommandResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

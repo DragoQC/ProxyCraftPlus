@@ -1,4 +1,4 @@
-import { initializeRconSettings } from "./rcon-settings.js";
+import { initializeRconSettings, forgetRconPasswords } from "./rcon-settings.js";
 
 const page = document.body.dataset.page;
 const csrf = document.querySelector('meta[name="csrf-token"]');
@@ -106,7 +106,7 @@ async function initialize() {
     }
 
     if (page === "rcon-settings") {
-        await initializeRconSettings(api, handleForm);
+        await initializeRconSettings(api, handleForm, showError);
     }
 
     if (page === "proxy-settings") {
@@ -609,6 +609,7 @@ function initializeProxies() {
                     remove.disabled = true;
                     try {
                         await api(`/proxies/${proxy.id}`, { method: "DELETE" });
+                        forgetRconPasswords(proxy.id);
                         feedback.textContent = `Deleted ${proxy.domain}.`;
                         await load();
                     } catch (failure) {
@@ -621,8 +622,8 @@ function initializeProxies() {
                 const rconSetup = document.createElement("a");
                 rconSetup.href = `/proxies/${proxy.id}/rcon`;
                 rconSetup.className = "button-secondary size-11 shrink-0 p-0 md:size-9";
-                rconSetup.title = "Set up RCON";
-                rconSetup.setAttribute("aria-label", `Set up RCON for ${proxy.domain}`);
+                rconSetup.title = "RCON console";
+                rconSetup.setAttribute("aria-label", `RCON console for ${proxy.domain}`);
                 rconSetup.innerHTML = '<svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM7 8l4 4-4 4m6 0h4" /></svg>';
                 buttons.append(connections, history, rconSetup, edit, remove);
                 actions.append(buttons);

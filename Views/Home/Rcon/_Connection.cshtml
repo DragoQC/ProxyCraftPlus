@@ -1,0 +1,40 @@
+<section class="card min-w-0 p-5 sm:p-6" aria-labelledby="rcon-setup-heading">
+    <h2 id="rcon-setup-heading" class="font-semibold">Connection</h2>
+    <p class="mt-2 text-sm text-muted">Connect to this Minecraft server's RCON port. Other routes and Minecraft players stay connected when you save.</p>
+    <form id="rcon-settings" data-proxy-id="@ViewData["ProxyId"]" method="post" asp-antiforgery="false" class="mt-5 space-y-5" novalidate>
+        <label class="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-body">
+            <input id="rconEnabled" name="enabled" type="checkbox" role="switch" class="peer sr-only" aria-controls="rcon-backend-fields" disabled />
+            <span aria-hidden="true" class="relative h-6 w-11 shrink-0 rounded-full bg-muted after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-white after:content-[''] peer-checked:bg-accent peer-checked:after:translate-x-5 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-accent peer-disabled:opacity-60 motion-safe:after:transition-transform"></span>
+            <span>Enable RCON</span>
+        </label>
+        <fieldset id="rcon-backend-fields" class="hidden space-y-5" disabled>
+            <div>
+                <label for="rconDestinationPort" class="field-label">RCON port</label>
+                <input id="rconDestinationPort" name="destinationPort" class="field" type="number" min="1" max="65535" value="25575" required />
+                <p class="mt-2 text-xs text-muted">Destination: <span id="rcon-backend-host" class="font-mono [overflow-wrap:anywhere]"></span></p>
+            </div>
+            <div>
+                <label for="rcon-password" class="field-label">RCON password</label>
+                <div class="relative">
+                    <input id="rcon-password" name="password" type="password" class="field pr-14" maxlength="1024" autocomplete="off" spellcheck="false" aria-describedby="rcon-password-hint" />
+                    <button id="toggle-rcon-password" type="button" class="button-secondary absolute inset-y-0 right-0 w-12 p-0" aria-label="Show RCON password" title="Show RCON password" aria-pressed="false">
+                        <svg aria-hidden="true" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                            <circle cx="12" cy="12" r="3" />
+                            <path data-password-hidden class="hidden" d="m3 3 18 18" />
+                        </svg>
+                    </button>
+                </div>
+                <p id="rcon-password-hint" class="mt-2 text-xs text-muted">Saved only in this browser when you save the connection. The server does not store it. Clear the field and save to forget it.</p>
+            </div>
+        </fieldset>
+        <p class="text-xs text-muted">Enable RCON in Minecraft's server.properties first. No additional public port is opened on ProxyCraftPlus.</p>
+        <p id="rcon-settings-error" role="alert" class="hidden text-sm text-danger"></p>
+        <div class="flex flex-wrap gap-3">
+            <button type="submit" class="button-primary" disabled>Save connection</button>
+            <button id="rcon-check" type="button" class="button-secondary" disabled>Test connection</button>
+        </div>
+        <p id="rcon-settings-status" role="status" class="text-sm text-accent"></p>
+        <p id="rcon-check-status" role="status" class="text-sm text-muted">Not checked.</p>
+    </form>
+</section>

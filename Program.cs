@@ -80,8 +80,6 @@ builder.Services.AddSingleton<IAuthorizationHandler, OptionalAuthenticationHandl
 builder.Services.AddAuthorization((Microsoft.AspNetCore.Authorization.AuthorizationOptions options) =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder().AddRequirements(new OptionalAuthenticationRequirement()).Build();
-    options.AddPolicy("RconRelay", (AuthorizationPolicyBuilder policy) =>
-        policy.AddAuthenticationSchemes(ApiKeyAuthenticationHandler.SchemeName).RequireAuthenticatedUser());
     options.AddPolicy("DomainEvents", (AuthorizationPolicyBuilder policy) =>
         policy.AddAuthenticationSchemes(ApiKeyAuthenticationHandler.SchemeName).RequireAuthenticatedUser());
 });

@@ -1,30 +1,11 @@
 @{
-    ViewData["Title"] = "RCON setup";
+    ViewData["Title"] = "RCON";
     ViewData["Page"] = "rcon-settings";
 }
 <a href="/proxies" class="text-sm text-accent underline underline-offset-4">Back to configured proxies</a>
-<h1 class="page-title mt-4">RCON setup</h1>
+<h1 class="page-title mt-4">RCON</h1>
 <p id="rcon-route-domain" class="page-description [overflow-wrap:anywhere]">Loading route…</p>
-<section class="card mt-8 max-w-xl p-6" aria-labelledby="rcon-setup-heading">
-    <h2 id="rcon-setup-heading" class="font-semibold">Optional API relay</h2>
-    <p class="mt-2 text-sm text-muted">Send commands through this instance's HTTPS API. ProxyCraftPlus relays them to the selected Minecraft server and returns its response.</p>
-    <form id="rcon-settings" data-proxy-id="@ViewData["ProxyId"]" method="post" asp-antiforgery="false" class="mt-5 space-y-5" novalidate>
-        <label class="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-body">
-            <input id="rconEnabled" name="enabled" type="checkbox" role="switch" class="peer sr-only" aria-controls="rcon-backend-fields" disabled />
-            <span aria-hidden="true" class="relative h-6 w-11 shrink-0 rounded-full bg-muted after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-white after:content-[''] peer-checked:bg-accent peer-checked:after:translate-x-5 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-accent peer-disabled:opacity-60 motion-safe:after:transition-transform"></span>
-            <span>Enable RCON relay</span>
-        </label>
-        <fieldset id="rcon-backend-fields" class="hidden space-y-4" disabled>
-            <div>
-                <label for="rconDestinationPort" class="field-label">Backend RCON port</label>
-                <input id="rconDestinationPort" name="destinationPort" class="field" type="number" min="1" max="65535" value="25575" required />
-            </div>
-            <p class="text-sm text-muted">Destination: <span id="rcon-backend-host" class="font-mono [overflow-wrap:anywhere]"></span>. Enable RCON and set its password on that Minecraft server first.</p>
-        </fieldset>
-        <p class="text-xs text-muted">No public RCON port is opened. Every route shares the same web API address; backend servers can all use port 25575. Saving here leaves Minecraft players connected.</p>
-        <p class="text-xs text-muted">Create an API key in App Settings and configure your RCON client to use this instance over HTTPS or a trusted private network. The client supplies the backend password; ProxyCraftPlus never saves it.</p>
-        <p id="rcon-settings-error" role="alert" class="hidden text-sm text-danger"></p>
-        <button type="submit" class="button-primary" disabled>Save RCON settings</button>
-        <p id="rcon-settings-status" role="status" class="text-sm text-accent"></p>
-    </form>
-</section>
+<div class="mt-8 grid items-start gap-6 lg:grid-cols-2">
+    <partial name="Rcon/_Connection" />
+    <partial name="Rcon/_Console" />
+</div>

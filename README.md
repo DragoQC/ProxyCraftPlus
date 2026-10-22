@@ -20,17 +20,18 @@ ProxyCraftPlus routes existing **Minecraft Java Edition** servers. It does not h
 
 ## Optional RCON, without extra public ports
 
-On a configured route, select the terminal icon: **Set up RCON**. Enable the relay and enter that server's internal RCON port (default **25575**). Enable RCON and set its password in Minecraft's `server.properties` first.
+On a configured route, select the terminal icon: **RCON console**. Enable RCON, enter its internal port (default **25575**) and password, then save. The same page tests the connection and sends commands such as `list`, displaying the server's response. Enable RCON in Minecraft's `server.properties` first.
 
 API clients send the selected proxy ID, backend password, and command to the same HTTPS API address. Different domains share that one entry point; every backend can use internal port 25575. No public RCON listener is opened. Ordinary native RCON clients cannot connect to this HTTPS relay directly.
 
-Commands and backend passwords are request-only: Plus does not store them, schedule them, or add client tools. Create an API key in **App Settings**; a valid key is always required for relay calls, including with dashboard sign-in off. Use HTTPS, or a trusted private network. The separate backend RCON connection is plaintext.
+The password is remembered only in this browser, with an eye button to show/hide it. Clear it and save to forget it. No password column or saved server-side credential is added. Output stays on the page and clears on reload. The UI uses its existing session/CSRF protection; external clients can use an API key from **App Settings**. Use HTTPS or a trusted private network. The separate backend RCON connection is plaintext.
 
-The original [ProxyCraft](https://github.com/DragoQC/ProxyCraft) stays focused on Minecraft routing. Plus is a separate application with its own database, cookie identity, settings, and keys. Do not point it at ProxyCraft's live data directory. RconCraft remains the separate client application; its API-relay transport is not included in this repository.
+The original [ProxyCraft](https://github.com/DragoQC/ProxyCraft) stays focused on Minecraft routing. Plus is a separate application with its own database, cookie identity, settings, and keys. Do not point it at ProxyCraft's live data directory. RconCraft's connection and console UI are now included in Plus; no separate RconCraft installation or discovery setup is needed.
 
 ## Included
 
 - Search, add, edit, delete, and copy domains; mobile cards and desktop tables.
+- One RCON action per route for connection settings, a password eye button, authentication checks, and command responses.
 - Route health, live connection counts, and the latest 20 player connection attempts per route.
 - Optional sign-in, authenticator 2FA, API keys, and a public welcome dashboard.
 - CPU/RAM/disk cards and Light, Dark, and Rainbow themes.

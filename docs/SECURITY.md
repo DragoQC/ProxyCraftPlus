@@ -39,9 +39,9 @@ Live connection state and recorded player names describe what the proxy observed
 
 ## Optional RCON API relay
 
-Relay checks and commands require a valid API key even when sign-in is disabled. Each route must opt in. The destination is read from the saved route; requests cannot supply an arbitrary target host or port. The main account/API key can still change routes through authorized management operations.
+Relay checks and commands use the existing management boundary: a real browser CSRF token/cookie pair and an account session when enabled, or a valid API key. Each route must opt in. The destination is read from the saved route; requests cannot supply an arbitrary target host or port. The main account/API key can still change routes through authorized management operations.
 
-Use HTTPS or a trusted private transport for the API. Native backend RCON remains plaintext and belongs on a trusted LAN or VPN. No public RCON sockets, backend password store, command audit database, schedules, or automatic retries are included. Do not enable body logging in reverse proxies or custom middleware for these endpoints.
+Use HTTPS or a trusted private transport for the API. Native backend RCON remains plaintext and belongs on a trusted LAN or VPN. No public RCON sockets, server-side password store, command audit database, schedules, or automatic retries are included. The UI intentionally stores an unencrypted password in that browser's local storage for its selected route/backend, as requested. Anyone with access to that browser profile or same-origin script execution can read it; the eye button only hides it visually. Clearing the password and saving removes the browser copy. The existing authentication boundary protects the page, not the browser profile itself. Do not enable body logging in reverse proxies or custom middleware for these endpoints.
 
 Eight backend connections, five-second queue waits, bounded request/packet/output sizes, and operation deadlines limit relay resource use. They are not a general denial-of-service guarantee. A failed/timed-out command may have executed; investigate before retrying. In-flight calls may complete after configuration changes.
 

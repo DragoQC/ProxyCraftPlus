@@ -56,6 +56,8 @@
 
 - [x] Independent application, repository, database, cookie identity, key ring, and installer/service names.
 - [x] Optional per-route backend RCON setup page and terminal action.
-- [x] API-key-only RCON authentication checks and command/response relay through the shared web endpoint.
+- [x] RCON authentication checks and command/response relay through the shared UI/API management boundary.
 - [x] Bounded native RCON client, request-only passwords, no public RCON sockets, and no automatic command retry.
-- [ ] RconCraft client transport integration with the relay API.
+- [x] RconCraft connection settings and command console merged into the per-route RCON action.
+- [x] Browser-only saved passwords with an eye button; no password column or schema change.
+- [x] Connection/console MVC partials and small browser components.

@@ -1,0 +1,17 @@
+<section class="card flex min-w-0 flex-col p-5 sm:p-6" aria-labelledby="rcon-console-heading">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="rcon-console-heading" class="font-semibold">Console</h2>
+        <button id="clear-console" type="button" class="button-secondary">Clear output</button>
+    </div>
+    <p id="console-state" class="mt-2 text-sm text-muted">Loading connection…</p>
+    <pre id="console-output" tabindex="0" role="log" aria-label="RCON command output" aria-live="polite" class="mt-4 h-80 min-h-48 max-h-[60dvh] overflow-auto overscroll-contain rounded-lg border p-4 font-mono text-xs whitespace-pre-wrap [overflow-wrap:anywhere]"></pre>
+    <form id="rcon-command" method="post" asp-antiforgery="false" class="mt-4 flex flex-wrap items-end gap-3" novalidate>
+        <div class="min-w-0 flex-1">
+            <label for="command" class="field-label">Command</label>
+            <input id="command" name="command" class="field font-mono" placeholder="list" maxlength="1024" autocomplete="off" spellcheck="false" required disabled />
+        </div>
+        <button type="submit" class="button-primary" disabled>Send</button>
+    </form>
+    <p id="console-error" role="alert" class="mt-3 hidden text-sm text-danger"></p>
+    <p class="mt-4 text-xs text-muted">Commands are sent once. Output stays on this page and clears on reload. A response can contain a Minecraft command error.</p>
+</section>
